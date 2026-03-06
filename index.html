@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Solana Chess Royale</title>
+    <script>
+      // Fix for "Cannot set property fetch of #<Window> which has only a getter"
+      // This happens because cross-fetch creates an object with window as prototype
+      // and tries to set `this.fetch = false`. If fetch is a getter on the prototype, it throws.
+      try {
+        const originalFetch = window.fetch || fetch;
+        if (originalFetch) {
+          // Define on window
+          Object.defineProperty(window, 'fetch', {
+            value: originalFetch,
+            writable: true,
+            configurable: true
+          });
+          // Define on Window.prototype if it exists
+          if (typeof Window !== 'undefined' && Window.prototype) {
+            Object.defineProperty(Window.prototype, 'fetch', {
+              value: originalFetch,
+              writable: true,
+              configurable: true
+            });
+          }
+          // Define on globalThis
+          if (typeof globalThis !== 'undefined') {
+            Object.defineProperty(globalThis, 'fetch', {
+              value: originalFetch,
+              writable: true,
+              configurable: true
+            });
+          }
+        }
+      } catch (e) {
+        console.warn('Could not make fetch writable:', e);
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
